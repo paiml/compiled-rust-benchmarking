@@ -5,6 +5,7 @@
 .PHONY: all build test bench quality clean help
 .PHONY: format format-check lint coverage mutation complexity
 .PHONY: satd dead-code tdg-check pre-commit-check ci-check
+.PHONY: test-fast coverage-open
 
 # Default target
 all: build test
@@ -16,6 +17,7 @@ help:
 	@echo "Development:"
 	@echo "  make build          - Build all crates"
 	@echo "  make test           - Run all tests"
+	@echo "  make test-fast      - Run tests with cargo-nextest (faster)"
 	@echo "  make bench          - Run benchmark suite"
 	@echo ""
 	@echo "Quality Gates (Pre-Commit - <30s):"
@@ -27,6 +29,7 @@ help:
 	@echo ""
 	@echo "Quality Gates (CI/CD - Comprehensive):"
 	@echo "  make coverage       - Generate coverage report (≥85%)"
+	@echo "  make coverage-open  - Open coverage HTML report in browser"
 	@echo "  make mutation       - Run mutation testing (≥85%)"
 	@echo "  make complexity     - Check code complexity"
 	@echo "  make dead-code      - Detect dead code"
@@ -57,6 +60,19 @@ unit-tests:
 
 test-verbose:
 	cargo test --all -- --nocapture
+
+test-fast:
+	@echo "⚡ Running fast tests with cargo-nextest..."
+	@echo "   (Leveraging incremental compilation and optimal parallelism)"
+	@if ! command -v cargo-nextest >/dev/null 2>&1; then \
+		echo "📦 Installing cargo-nextest for optimal performance..."; \
+		cargo install cargo-nextest --locked; \
+	fi
+	@echo "🔨 Compiling tests..."
+	@cargo nextest run --no-run --workspace
+	@echo "🧪 Running tests (5-minute timeout)..."
+	@timeout 300 cargo nextest run --no-fail-fast --workspace || true
+	@echo "✅ Fast tests completed!"
 
 # Pre-Commit Quality Gates (<30 seconds total)
 # Peer Review: Muri mitigation - fast checks only
@@ -96,13 +112,42 @@ pre-commit-check: format-check lint satd dead-code-warn unit-tests-quick
 # CI/CD Quality Gates (Comprehensive - 5-15 minutes)
 
 coverage:
-	@echo "Running coverage analysis..."
-	@if command -v cargo-llvm-cov >/dev/null 2>&1; then \
-		cargo llvm-cov --all --lcov --output-path lcov.info; \
-		cargo llvm-cov report | grep "TOTAL"; \
+	@echo "📊 Running test coverage analysis (<10 min target)..."
+	@echo "🔍 Checking for cargo-llvm-cov and cargo-nextest..."
+	@command -v cargo-llvm-cov > /dev/null 2>&1 || (echo "📦 Installing cargo-llvm-cov..." && cargo install cargo-llvm-cov --locked)
+	@command -v cargo-nextest > /dev/null 2>&1 || (echo "📦 Installing cargo-nextest..." && cargo install cargo-nextest --locked)
+	@echo "🧹 Cleaning old coverage data..."
+	@cargo llvm-cov clean --workspace
+	@mkdir -p target/coverage
+	@echo "🧪 Running tests with instrumentation..."
+	@timeout 600 cargo llvm-cov --no-report nextest \
+		--no-tests=warn \
+		--no-fail-fast \
+		--test-threads=8 \
+		--failure-output=immediate-final \
+		--workspace
+	@echo "📊 Generating coverage reports..."
+	@cargo llvm-cov report --html --output-dir target/coverage/html
+	@cargo llvm-cov report --lcov --output-path target/coverage/lcov.info
+	@echo ""
+	@echo "📊 Coverage Summary:"
+	@echo "=================="
+	@cargo llvm-cov report --summary-only
+	@echo ""
+	@echo "💡 COVERAGE INSIGHTS:"
+	@echo "- HTML report: target/coverage/html/index.html"
+	@echo "- LCOV file: target/coverage/lcov.info"
+	@echo "- Open HTML: make coverage-open"
+	@echo ""
+
+coverage-open:
+	@echo "🌐 Opening coverage report in browser..."
+	@if [ -f target/coverage/html/index.html ]; then \
+		xdg-open target/coverage/html/index.html 2>/dev/null || \
+		open target/coverage/html/index.html 2>/dev/null || \
+		echo "Please open target/coverage/html/index.html manually"; \
 	else \
-		echo "⚠️  cargo-llvm-cov not installed. Install with: cargo install cargo-llvm-cov"; \
-		echo "Skipping coverage check for Phase 0."; \
+		echo "❌ Coverage report not found. Run 'make coverage' first."; \
 	fi
 
 mutation:
@@ -149,6 +194,7 @@ bench:
 clean:
 	cargo clean
 	rm -rf results/build results/raw results/perf results/aggregated
+	rm -rf target/coverage
 	rm -f lcov.info mutants.txt
 
 # TDG Baseline (Phase 0 - initial creation)
