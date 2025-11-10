@@ -1,0 +1,5 @@
+[profile.cg1-strip]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

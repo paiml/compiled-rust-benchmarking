@@ -1,0 +1,146 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/harness",
+    "crates/stats",
+    "benchmarks/ackermann",
+    "benchmarks/fibonacci",
+    "benchmarks/prime-sieve",
+    "benchmarks/matrix-mult",
+    "benchmarks/quicksort",
+    "benchmarks/string-parse",
+    "benchmarks/hashmap-ops",
+    "benchmarks/file-io",
+    "benchmarks/json-parse",
+    "benchmarks/btreemap-ops", "crates/analysis",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["PAIML Research Team"]
+license = "MIT"
+repository = "https://github.com/paiml/compiled-rust-benchmarking"
+
+[workspace.dependencies]
+# Statistical analysis
+statrs = "0.17"
+
+# Property-based testing
+proptest = "1.4"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# CLI
+clap = { version = "4.5", features = ["derive"] }
+
+[profile.release]
+opt-level = 3
+lto = false
+codegen-units = 16
+panic = "unwind"
+strip = false
+
+[profile.release-ultra]
+inherits = "release"
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+
+# Pathfinder Study Profiles
+# These profiles are used for early hypothesis validation
+
+[profile.baseline]
+inherits = "dev"
+opt-level = 0
+
+[profile.standard-release]
+inherits = "release"
+opt-level = 3
+lto = false
+codegen-units = 16
+
+[profile.lto-thin]
+inherits = "release"
+opt-level = 3
+lto = "thin"
+codegen-units = 16
+
+[profile.lto-fat]
+inherits = "release"
+opt-level = 3
+lto = "fat"
+codegen-units = 16
+
+[profile.codegen-1]
+inherits = "release"
+opt-level = 3
+lto = false
+codegen-units = 1
+
+[profile.cpu-native]
+inherits = "release"
+opt-level = 3
+lto = false
+codegen-units = 16
+
+[profile.opt-s]
+inherits = "release"
+opt-level = "s"
+lto = false
+codegen-units = 16
+
+[profile.size-s-lto]
+inherits = "release"
+opt-level = "s"
+lto = "fat"
+codegen-units = 1
+
+[profile.size-s-strip]
+inherits = "release"
+opt-level = "s"
+lto = "thin"
+codegen-units = 16
+strip = "symbols"
+
+[profile.size-z-lto]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+
+[profile.size-z-strip]
+inherits = "release"
+opt-level = "z"
+lto = "thin"
+codegen-units = 16
+strip = "symbols"
+
+[profile.size-ultra]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+strip = "symbols"
+
+[profile.size-s-native]
+inherits = "release"
+opt-level = "s"
+lto = "thin"
+codegen-units = 1
+
+[profile.size-z-native]
+inherits = "release"
+opt-level = "z"
+lto = "thin"
+codegen-units = 1
+
+[profile.perf-ultra]
+inherits = "release"
+opt-level = 3
+lto = "fat"
+codegen-units = 1

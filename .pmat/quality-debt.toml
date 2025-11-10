@@ -1,0 +1,17 @@
+# Quality Debt Tracking
+# Purpose: Track temporary quality gate reductions with payback plans
+# Spec Reference: Section 5 - Pragmatic Quality Management (Peer Review: Muri mitigation)
+
+# Example entry format:
+# [[debt]]
+# module = "crates/harness/src/example.rs"
+# gate = "mutation_score"
+# current_value = 78.0
+# target_value = 85.0
+# reason = "New feature, tests in progress"
+# created_date = "2025-11-10"
+# payback_deadline = "2025-11-17"
+# payback_plan = "Add 5 property-based tests for edge cases"
+# owner = "developer@example.com"
+
+# Current debt: None (Phase 0)

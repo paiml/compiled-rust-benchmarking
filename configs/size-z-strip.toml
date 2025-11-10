@@ -1,0 +1,5 @@
+[profile.size-z-strip]
+opt-level = z
+lto = "thin"
+codegen-units = 16
+strip = "debuginfo"

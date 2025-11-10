@@ -1,0 +1,5 @@
+[profile.opt1-strip-debuginfo]
+opt-level = 1
+lto = false
+codegen-units = 16
+strip = "debuginfo"

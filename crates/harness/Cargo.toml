@@ -1,0 +1,44 @@
+[package]
+name = "harness"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "generate-configs"
+path = "src/bin/generate_configs.rs"
+
+[[bin]]
+name = "show-build-matrix"
+path = "src/bin/show_build_matrix.rs"
+
+[[bin]]
+name = "run-pathfinder"
+path = "src/bin/run_pathfinder.rs"
+
+[[bin]]
+name = "multi-benchmark-study"
+path = "src/bin/multi_benchmark_study.rs"
+
+[[bin]]
+name = "full-pathfinder-execution"
+path = "src/bin/full_pathfinder_execution.rs"
+
+[[bin]]
+name = "pathfinder-demo"
+path = "src/bin/pathfinder_demo.rs"
+
+[[bin]]
+name = "analyze-results"
+path = "src/bin/analyze_results.rs"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+stats = { path = "../stats" }
+analysis = { path = "../analysis" }
+
+[dev-dependencies]
+proptest.workspace = true

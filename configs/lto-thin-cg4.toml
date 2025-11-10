@@ -1,0 +1,5 @@
+[profile.lto-thin-cg4]
+opt-level = 3
+lto = "thin"
+codegen-units = 4
+strip = false

@@ -1,0 +1,5 @@
+[profile.size-z-native]
+opt-level = z
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

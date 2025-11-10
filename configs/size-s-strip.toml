@@ -1,0 +1,5 @@
+[profile.size-s-strip]
+opt-level = s
+lto = "thin"
+codegen-units = 16
+strip = "debuginfo"

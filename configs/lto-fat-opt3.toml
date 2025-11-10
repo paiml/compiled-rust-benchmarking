@@ -1,0 +1,5 @@
+[profile.lto-fat-opt3]
+opt-level = 3
+lto = "fat"
+codegen-units = 16
+strip = false

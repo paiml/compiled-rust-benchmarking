@@ -1,0 +1,5 @@
+[profile.size-z-lto]
+opt-level = z
+lto = "fat"
+codegen-units = 1
+strip = "symbols"

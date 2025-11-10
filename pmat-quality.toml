@@ -1,0 +1,108 @@
+# PMAT Tool Configuration
+# Project: compiled-rust-benchmarking
+# Spec Version: 2.1.0 (Peer Reviewed)
+
+[pmat]
+version = "2.192.0"
+strict_mode = true
+auto_update = false  # Pin version for reproducibility
+
+[tdg]
+# Technical Debt Grading configuration
+baseline_file = ".pmat/tdg-baseline.json"
+fail_on_regression = true
+min_grade = "A"
+target_grade = "A+"
+
+# TDG dimension weights (must sum to 1.0)
+[tdg.weights]
+test_coverage = 0.25
+mutation_score = 0.25
+complexity = 0.20
+satd = 0.10
+documentation = 0.10
+dead_code = 0.10
+
+[mutate]
+# Mutation testing configuration
+default_threshold = 85.0
+critical_threshold = 95.0
+timeout_seconds = 300
+parallel_jobs = 4
+
+# Exclude patterns (glob syntax)
+exclude_patterns = [
+  "tests/*",
+  "benchmarks/*/generated/*",
+  "target/*",
+  "results/*",
+  "configs/*",
+  "scripts/*"
+]
+
+# Mutation operators
+operators = [
+  "replace-binary-operator",
+  "replace-return-value",
+  "replace-function-call",
+  "replace-conditional"
+]
+
+[complexity]
+# Complexity analysis configuration
+language = "rust"
+max_cyclomatic = 15
+max_cognitive = 20
+fail_on_violation = true
+
+# Exclude test files from complexity checks
+exclude_tests = true
+
+[satd]
+# Self-Admitted Technical Debt configuration
+fail_on_violation = true
+case_insensitive = false
+
+# SATD patterns (regex)
+patterns = [
+  "TODO",
+  "FIXME",
+  "HACK",
+  "XXX",
+  "BUG",
+  "DEPRECATED"
+]
+
+# Allowed patterns (exceptions) - empty for Phase 0
+allowed_patterns = []
+
+[dead-code]
+# Dead code detection configuration
+fail_on_detection = false  # Warn only in pre-commit (Peer Review: Muri mitigation)
+fail_on_detection_ci = true  # Enforce in CI/CD
+suggest_removal = true
+exclude_test_helpers = true
+
+[documentation]
+# Documentation validation configuration
+semantic_entropy_threshold = 1.5
+validate_code_examples = true
+require_public_api_docs = true
+
+# Deep context generation
+deep_context_file = ".pmat/deep_context.md"
+auto_update_context = true  # Update on every build
+
+[hooks]
+# Pre-commit hooks configuration
+install_path = ".git/hooks/pre-commit"
+fail_fast = true
+bypass_allowed = true  # Peer Review: Allow --no-verify for WIP (Muri mitigation)
+
+[cost-of-quality]
+# Cost of Quality tracking
+enabled = true
+reporting_period = "monthly"
+hourly_rate = 150.0
+output_format = "markdown"
+output_path = "results/cost-of-quality-report.md"

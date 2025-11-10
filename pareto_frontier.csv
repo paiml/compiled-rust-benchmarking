@@ -1,0 +1,16 @@
+profile,speedup,binary_size_kb
+baseline,1.00,3782.20
+standard-release,2.25,3768.75
+lto-thin,2.24,1886.89
+lto-fat,2.25,1763.41
+codegen-1,2.68,3768.50
+cpu-native,2.24,3768.75
+opt-s,2.68,3768.75
+size-s-lto,2.23,1707.91
+size-s-strip,2.25,334.47
+size-z-lto,2.16,1713.03
+size-z-strip,2.16,334.47
+size-ultra,2.15,314.39
+size-s-native,2.22,1827.28
+size-z-native,2.15,1827.97
+perf-ultra,2.24,1763.41

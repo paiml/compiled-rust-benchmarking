@@ -1,0 +1,5 @@
+[profile.lto-fat-cg4]
+opt-level = 3
+lto = "fat"
+codegen-units = 4
+strip = false

@@ -1,0 +1,8 @@
+[package]
+name = "string-parse"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "string-parse"
+path = "src/main.rs"

@@ -1,0 +1,13 @@
+[package]
+name = "stats"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+statrs.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true

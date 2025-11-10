@@ -1,0 +1,20 @@
+{
+  "benchmark": "fibonacci",
+  "sizes": {
+    "baseline": {"bytes": 3872976, "kb": 3782.20, "mb": 3.693},
+    "standard-release": {"bytes": 3859208, "kb": 3768.75, "mb": 3.680},
+    "lto-thin": {"bytes": 1932176, "kb": 1886.89, "mb": 1.842},
+    "lto-fat": {"bytes": 1805736, "kb": 1763.41, "mb": 1.722},
+    "codegen-1": {"bytes": 3858952, "kb": 3768.50, "mb": 3.680},
+    "cpu-native": {"bytes": 3859208, "kb": 3768.75, "mb": 3.680},
+    "opt-s": {"bytes": 3859200, "kb": 3768.75, "mb": 3.680},
+    "size-s-lto": {"bytes": 1748904, "kb": 1707.91, "mb": 1.667},
+    "size-s-strip": {"bytes": 342504, "kb": 334.47, "mb": 0.326},
+    "size-z-lto": {"bytes": 1754144, "kb": 1713.03, "mb": 1.672},
+    "size-z-strip": {"bytes": 342504, "kb": 334.47, "mb": 0.326},
+    "size-ultra": {"bytes": 321944, "kb": 314.39, "mb": 0.307},
+    "size-s-native": {"bytes": 1871136, "kb": 1827.28, "mb": 1.784},
+    "size-z-native": {"bytes": 1871848, "kb": 1827.97, "mb": 1.785},
+    "perf-ultra": {"bytes": 1805736, "kb": 1763.41, "mb": 1.722}
+  }
+}

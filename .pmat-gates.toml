@@ -1,0 +1,105 @@
+# PMAT Quality Gates Configuration
+# Project: compiled-rust-benchmarking
+# Version: 0.1.0
+# Spec Version: 2.1.0 (Peer Reviewed)
+
+[quality-gates]
+# Test coverage threshold (line coverage)
+test_coverage_threshold = 85.0
+test_coverage_target = 95.0  # Stretch goal
+
+# Mutation testing thresholds
+mutation_score_threshold = 85.0
+mutation_score_critical_threshold = 95.0  # For critical code paths
+
+# Complexity limits
+max_cyclomatic_complexity = 15
+max_cognitive_complexity = 20
+
+# Technical debt limits
+satd_violations_allowed = 0  # Zero tolerance for TODO/FIXME/HACK
+dead_code_percent_allowed = 0.0
+clippy_warnings_allowed = 0
+
+# TDG grading
+tdg_min_grade = "A"
+tdg_target_grade = "A+"
+
+[critical-paths]
+# Critical code paths require 95% mutation score
+paths = [
+  "crates/stats/src/lib.rs",              # Statistical functions
+  "crates/harness/src/measurement.rs",    # Benchmark execution
+  "crates/harness/src/validation.rs",     # Output validation
+  "crates/harness/src/config.rs",         # Configuration generation
+]
+mutation_threshold = 95.0
+
+[documentation]
+# Documentation requirements
+require_public_api_docs = true
+semantic_entropy_threshold = 1.5  # Max entropy for claims
+validate_code_examples = true
+require_examples = true
+
+# Documentation targets
+targets = [
+  "README.md",
+  "docs/BENCHMARKS.md",
+  "docs/RESULTS.md",
+  "docs/CONFIGURATIONS.md",
+  "CONTRIBUTING.md"
+]
+
+[pre-commit]
+# Pre-commit hook configuration (sustainable - addressing Muri)
+enabled = true
+fail_fast = true  # Stop on first failure
+bypass_allowed = true  # Allow --no-verify for WIP commits (Peer Review: Muri mitigation)
+
+# Fast hooks only (<30 seconds total)
+hooks = [
+  "format-check",      # 5s
+  "lint",              # 10s
+  "satd-check",        # 2s
+  "dead-code-check",   # 3s (warn only)
+  "complexity-check",  # 5s
+  "unit-tests",        # 5s (cargo test --lib only)
+]
+
+[ci-cd]
+# CI/CD pipeline configuration (comprehensive checks)
+fail_on_quality_regression = true
+fail_on_coverage_drop = true
+fail_on_mutation_score_drop = true
+fail_on_tdg_grade_drop = true
+
+# Quality gate thresholds for CI/CD
+min_coverage_change = -2.0  # Allow max 2% coverage drop
+min_mutation_score_change = -3.0  # Allow max 3% mutation score drop
+min_tdg_score_change = -1.0  # Allow max 1 TDG point drop
+
+# Comprehensive checks in CI/CD (not pre-commit)
+ci_hooks = [
+  "full-test-suite",      # cargo test --all
+  "coverage",             # ≥85% enforced
+  "mutation",             # ≥85% enforced
+  "integration-tests",    # End-to-end pipeline
+  "tdg-regression-check"  # TDG baseline comparison
+]
+
+[cost-of-quality]
+# CoQ tracking configuration
+enabled = true
+reporting_period = "monthly"
+hourly_rate = 150.0  # USD per developer hour
+track_prevention_costs = true
+track_appraisal_costs = true
+track_failure_costs = true
+
+[quality-debt]
+# Quality debt tracking (Peer Review: Pragmatic quality management)
+enabled = true
+tracking_file = ".pmat/quality-debt.toml"
+require_payback_plan = true
+max_debt_age_days = 30

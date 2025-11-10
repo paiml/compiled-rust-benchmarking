@@ -1,0 +1,5 @@
+[profile.lto-thin-opt2]
+opt-level = 2
+lto = "thin"
+codegen-units = 16
+strip = false

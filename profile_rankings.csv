@@ -1,0 +1,15 @@
+profile,mean_speedup,ci_lower,ci_upper,stddev
+lto-fat,15.06,5.83,24.29,14.89
+lto-thin,14.47,5.74,23.19,14.08
+codegen-1,14.08,5.37,22.80,14.07
+standard-release,13.91,6.21,21.62,12.42
+perf-ultra,13.74,6.05,21.43,12.40
+cpu-native,13.36,6.26,20.45,11.45
+size-s-lto,13.24,5.82,20.66,11.97
+size-s-strip,12.18,5.94,18.41,10.06
+opt-s,12.11,4.55,19.67,12.20
+size-s-native,11.85,5.57,18.13,10.13
+size-ultra,9.39,4.53,14.26,7.85
+size-z-lto,9.34,4.43,14.24,7.91
+size-z-native,8.56,3.63,13.49,7.95
+size-z-strip,7.62,3.58,11.67,6.53

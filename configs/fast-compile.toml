@@ -1,0 +1,5 @@
+[profile.fast-compile]
+opt-level = 1
+lto = false
+codegen-units = 256
+strip = false

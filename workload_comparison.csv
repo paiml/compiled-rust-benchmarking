@@ -1,0 +1,11 @@
+benchmark,workload_type,max_speedup,best_profile
+ackermann,CPU-recursive,6.00,perf-ultra
+btreemap-ops,Data-structures,15.45,size-s-lto
+fibonacci,CPU-recursive,2.68,codegen-1
+file-io,IO-bound,1.99,size-z-native
+hashmap-ops,Data-structures,8.78,lto-fat
+json-parse,Serialization,11.88,lto-fat
+matrix-mult,Memory-cache,22.64,opt-s
+prime-sieve,CPU-iterative,25.81,perf-ultra
+quicksort,Memory-random,51.33,lto-fat
+string-parse,String-processing,11.04,perf-ultra

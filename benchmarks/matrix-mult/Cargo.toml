@@ -1,0 +1,8 @@
+[package]
+name = "matrix-mult"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "matrix-mult"
+path = "src/main.rs"

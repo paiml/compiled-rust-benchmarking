@@ -1,0 +1,5 @@
+[profile.pgo-cg4]
+opt-level = 3
+lto = false
+codegen-units = 4
+strip = false

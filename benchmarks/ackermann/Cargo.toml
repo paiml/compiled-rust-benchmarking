@@ -1,0 +1,8 @@
+[package]
+name = "ackermann"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "ackermann"
+path = "src/main.rs"

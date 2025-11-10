@@ -1,0 +1,5 @@
+[profile.opt-z]
+opt-level = z
+lto = false
+codegen-units = 16
+strip = false
