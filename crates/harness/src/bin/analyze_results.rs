@@ -221,17 +221,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Some(t_result) = t_test_welch(&speedups1, &speedups2) {
                 let effect = cohens_d(&speedups1, &speedups2).unwrap_or(0.0);
 
-                println!(
-                    "{:<20} vs {:<20}",
-                    format!("{}:", profile1),
-                    profile2
-                );
+                println!("{:<20} vs {:<20}", format!("{}:", profile1), profile2);
                 println!("  Mean diff: {:>6.2}x", t_result.mean_diff);
                 println!("  t-statistic: {:>6.2}", t_result.t_statistic);
                 println!("  Cohen's d: {:>6.2}", effect);
                 println!(
                     "  Significant: {}",
-                    if t_result.significant { "✓ YES" } else { "✗ NO" }
+                    if t_result.significant {
+                        "✓ YES"
+                    } else {
+                        "✗ NO"
+                    }
                 );
                 println!();
             }

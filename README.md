@@ -26,15 +26,43 @@ Complete, production-ready scientific test harness for benchmarking Rust binary 
 
 ---
 
-## Visualization: Complete Analysis
+## Optimization Strategies & Results
+
+![Optimization Speedup](docs/images/optimization-speedup.png)
+
+**Figure**: Comprehensive optimization results showing 15× average speedup (lto-fat), SIMD acceleration with Trueno (2-7× additional boost), and six proven optimization strategies validated across 10 workloads.
+
+---
+
+## Detailed Analysis
 
 ![Benchmark Results](visualizations/combined_analysis_small.png)
 
-**Figure**: Comprehensive analysis showing (A) Pareto frontier for speed vs size tradeoffs, (B) Top profile rankings with confidence intervals, (C) Maximum speedup by workload type, and (D) Performance heatmap across benchmarks and profiles.
+**Figure**: Statistical analysis showing (A) Pareto frontier for speed vs size tradeoffs, (B) Top profile rankings with confidence intervals, (C) Maximum speedup by workload type, and (D) Performance heatmap across benchmarks and profiles.
 
 ---
 
 ## Quick Start
+
+### Tiered Testing (certeza-style) 🚀
+
+This project integrates **certeza**, **trueno**, and **ruchy-docker** best practices for sustainable quality:
+
+```bash
+# Tier 1: ON-SAVE (sub-second feedback)
+make tier1   # Quick checks, unit tests, format - perfect for rapid iteration
+
+# Tier 2: ON-COMMIT (1-5 minutes)
+make tier2   # Full tests, coverage, property tests - run before committing
+
+# Tier 3: ON-MERGE (hours)
+make tier3   # Mutation testing, exhaustive validation - CI/CD only
+
+# See all options
+make help
+```
+
+**Learn more**: See [INTEGRATION.md](INTEGRATION.md) for comprehensive integration guide.
 
 ### View Results Immediately
 

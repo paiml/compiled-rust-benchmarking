@@ -15,6 +15,12 @@ members = [
     "benchmarks/btreemap-ops", "crates/analysis",
 ]
 
+# Excluded from workspace: requires nightly Rust for trueno AVX-512 features
+# To use: rustup default nightly && cargo build -p trueno-simd --manifest-path benchmarks/trueno-simd/Cargo.toml
+exclude = [
+    "benchmarks/trueno-simd",
+]
+
 [workspace.package]
 version = "0.1.0"
 edition = "2021"

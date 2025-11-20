@@ -1,0 +1,18 @@
+[package]
+name = "trueno-simd"
+version = "0.1.0"
+edition = "2021"
+
+# NOTE: This benchmark requires nightly Rust due to AVX-512 features in trueno
+# To build: rustup default nightly && cargo build -p trueno-simd
+# Or use the provided script: ./scripts/build-trueno.sh
+
+[[bin]]
+name = "trueno-simd"
+path = "src/main.rs"
+
+[dependencies]
+trueno = "0.4.1"  # Requires nightly Rust for AVX-512
+
+[dev-dependencies]
+proptest = "1.8"

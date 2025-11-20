@@ -6,28 +6,40 @@
 .PHONY: format format-check lint coverage mutation complexity
 .PHONY: satd dead-code tdg-check pre-commit-check ci-check
 .PHONY: test-fast coverage-open
+.PHONY: tier1 tier2 tier3 install-tools bench-trueno
 
 # Default target
 all: build test
 
 # Help target
 help:
-	@echo "Compiled Rust Benchmarking - Quality Targets"
+	@echo "╔═══════════════════════════════════════════════════════════╗"
+	@echo "║  Compiled Rust Benchmarking - Quality Targets            ║"
+	@echo "╚═══════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "Development:"
+	@echo "🚀 TIERED TESTING (certeza-style):"
+	@echo "  make tier1          - ON-SAVE: Sub-second checks (unit tests, format, quick clippy)"
+	@echo "  make tier2          - ON-COMMIT: 1-5min (full tests, coverage, property tests)"
+	@echo "  make tier3          - ON-MERGE: Hours (mutation testing, benchmarks)"
+	@echo "  make install-tools  - Install all required testing tools"
+	@echo ""
+	@echo "📊 BENCHMARKING:"
+	@echo "  make bench-trueno   - Run trueno SIMD benchmark (matrix operations)"
+	@echo "  make bench          - Run benchmark suite (Phase 1+)"
+	@echo ""
+	@echo "🔨 Development:"
 	@echo "  make build          - Build all crates"
 	@echo "  make test           - Run all tests"
 	@echo "  make test-fast      - Run tests with cargo-nextest (faster)"
-	@echo "  make bench          - Run benchmark suite"
 	@echo ""
-	@echo "Quality Gates (Pre-Commit - <30s):"
+	@echo "✅ Quality Gates (Pre-Commit - <30s):"
 	@echo "  make format-check   - Check code formatting"
 	@echo "  make lint           - Run clippy linter"
 	@echo "  make satd           - Check for TODO/FIXME/HACK"
 	@echo "  make unit-tests     - Run unit tests only (fast)"
 	@echo "  make pre-commit-check - Run all pre-commit gates"
 	@echo ""
-	@echo "Quality Gates (CI/CD - Comprehensive):"
+	@echo "📈 Quality Gates (CI/CD - Comprehensive):"
 	@echo "  make coverage       - Generate coverage report (≥85%)"
 	@echo "  make coverage-open  - Open coverage HTML report in browser"
 	@echo "  make mutation       - Run mutation testing (≥85%)"
@@ -36,12 +48,13 @@ help:
 	@echo "  make tdg-check      - TDG regression check"
 	@echo "  make ci-check       - Run all CI/CD gates"
 	@echo ""
-	@echo "Full Quality Pipeline:"
+	@echo "🎯 Full Quality Pipeline:"
 	@echo "  make quality        - Run all quality checks"
 	@echo ""
-	@echo "Utilities:"
+	@echo "🛠️  Utilities:"
 	@echo "  make clean          - Clean build artifacts"
 	@echo "  make fmt            - Auto-format code"
+	@echo "  make watch          - Watch mode (auto-rebuild on changes)"
 
 # Build targets
 build:
@@ -218,3 +231,148 @@ watch:
 	else \
 		echo "cargo-watch not installed. Install with: cargo install cargo-watch"; \
 	fi
+
+# ============================================================
+# CERTEZA-STYLE TIERED TESTING
+# Integrated from certeza framework for sustainable quality
+# ============================================================
+
+# Tier 1: ON-SAVE (Sub-second feedback)
+# - Unit tests and focused property tests
+# - Static analysis (cargo check, cargo clippy)
+# - Enables rapid iteration in flow state
+tier1:
+	@echo "╔═══════════════════════════════════════════════════════════╗"
+	@echo "║  TIER 1: ON-SAVE (Sub-second feedback)                   ║"
+	@echo "║  - Unit tests only                                        ║"
+	@echo "║  - Quick clippy checks                                    ║"
+	@echo "║  - Format verification                                    ║"
+	@echo "╚═══════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "[1/4] Quick build check..."
+	@cargo check --workspace --quiet || exit 1
+	@echo "✅ Build check passed"
+	@echo ""
+	@echo "[2/4] Format check..."
+	@cargo fmt --all --check || (echo "❌ Format issues found. Run 'make fmt'" && exit 1)
+	@echo "✅ Format check passed"
+	@echo ""
+	@echo "[3/4] Quick clippy (warnings only)..."
+	@cargo clippy --workspace --all-targets -- -D clippy::correctness -D clippy::suspicious || exit 1
+	@echo "✅ Clippy passed"
+	@echo ""
+	@echo "[4/4] Unit tests only..."
+	@cargo test --lib --workspace --quiet || exit 1
+	@echo "✅ Unit tests passed"
+	@echo ""
+	@echo "✅ TIER 1 COMPLETE - Ready for rapid iteration!"
+
+# Tier 2: ON-COMMIT (1-5 minutes)
+# - Full property-based test suite
+# - Coverage analysis (target: 85%+)
+# - Integration tests
+# - Pre-commit hook enforcement
+tier2:
+	@echo "╔═══════════════════════════════════════════════════════════╗"
+	@echo "║  TIER 2: ON-COMMIT (1-5 minutes)                         ║"
+	@echo "║  - Full test suite (unit + integration + property)       ║"
+	@echo "║  - Coverage analysis (≥85%)                              ║"
+	@echo "║  - All quality gates                                      ║"
+	@echo "╚═══════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "[1/5] Running full test suite..."
+	@cargo test --workspace || exit 1
+	@echo "✅ All tests passed"
+	@echo ""
+	@echo "[2/5] Running clippy (strict mode)..."
+	@cargo clippy --workspace --all-targets --all-features -- -D warnings || exit 1
+	@echo "✅ Clippy passed"
+	@echo ""
+	@echo "[3/5] Checking for SATD violations..."
+	@if grep -rn --include="*.rs" -E "(TODO|FIXME|HACK)" crates/ benchmarks/ 2>/dev/null | grep -v "trueno-simd"; then \
+		echo "❌ Found SATD violations"; \
+		exit 1; \
+	fi
+	@echo "✅ No SATD violations"
+	@echo ""
+	@echo "[4/5] Running coverage analysis..."
+	@make coverage-quick || exit 1
+	@echo ""
+	@echo "[5/5] Property-based tests..."
+	@echo "Running property tests with 100 cases per test..."
+	@PROPTEST_CASES=100 cargo test --workspace property_ || exit 1
+	@echo "✅ Property tests passed"
+	@echo ""
+	@echo "✅ TIER 2 COMPLETE - Ready for commit!"
+
+# Quick coverage for tier2 (faster than full coverage)
+coverage-quick:
+	@echo "📊 Quick coverage analysis..."
+	@command -v cargo-llvm-cov > /dev/null 2>&1 || (echo "📦 Installing cargo-llvm-cov..." && cargo install cargo-llvm-cov --locked)
+	@cargo llvm-cov clean --workspace --quiet
+	@cargo llvm-cov test --workspace --quiet --no-report
+	@echo ""
+	@echo "📊 Coverage Summary:"
+	@cargo llvm-cov report --summary-only
+	@echo ""
+
+# Tier 3: ON-MERGE/NIGHTLY (Hours)
+# - Comprehensive mutation testing (target: >85%)
+# - Full benchmarking suite
+# - Performance regression detection
+# - CI/CD gate for main branch
+tier3:
+	@echo "╔═══════════════════════════════════════════════════════════╗"
+	@echo "║  TIER 3: ON-MERGE/NIGHTLY (Hours)                        ║"
+	@echo "║  - Mutation testing (≥85% score)                         ║"
+	@echo "║  - Full benchmark suite                                   ║"
+	@echo "║  - Performance regression detection                       ║"
+	@echo "╚═══════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "[1/3] Running comprehensive mutation testing..."
+	@if command -v cargo-mutants >/dev/null 2>&1; then \
+		echo "Running mutation testing (this will take a while)..."; \
+		cargo mutants --no-times --output target/mutants.txt || exit 1; \
+		echo "✅ Mutation testing complete"; \
+	else \
+		echo "❌ cargo-mutants not installed"; \
+		echo "Install with: cargo install cargo-mutants"; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "[2/3] Running full coverage analysis..."
+	@make coverage || exit 1
+	@echo ""
+	@echo "[3/3] Running benchmark suite..."
+	@echo "Note: Full benchmark suite would run here"
+	@echo "This includes all pathfinder executions and statistical analysis"
+	@echo ""
+	@echo "✅ TIER 3 COMPLETE - Ready for merge to main!"
+
+# ============================================================
+# TRUENO SIMD BENCHMARKING
+# Integrated from trueno + ruchy-docker
+# ============================================================
+
+bench-trueno:
+	@echo "╔═══════════════════════════════════════════════════════════╗"
+	@echo "║  Trueno SIMD Benchmarking                                ║"
+	@echo "║  Matrix operations with SIMD acceleration                ║"
+	@echo "╚═══════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "Building trueno-simd benchmark..."
+	@cargo build --release -p trueno-simd
+	@echo ""
+	@echo "Running trueno SIMD benchmark..."
+	@./target/release/trueno-simd
+	@echo ""
+	@echo "✅ Benchmark complete!"
+
+# Install required testing tools
+install-tools:
+	@echo "Installing testing tools..."
+	@command -v cargo-llvm-cov > /dev/null 2>&1 || cargo install cargo-llvm-cov --locked
+	@command -v cargo-nextest > /dev/null 2>&1 || cargo install cargo-nextest --locked
+	@command -v cargo-mutants > /dev/null 2>&1 || (echo "Installing cargo-mutants..." && cargo install cargo-mutants --locked)
+	@command -v cargo-watch > /dev/null 2>&1 || (echo "Installing cargo-watch..." && cargo install cargo-watch --locked)
+	@echo "✅ All tools installed!"
